@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser History Analyzer</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <h1>Browser History Analyzer</h1>
+      <p>Enter the path to your Chrome History file and view the results in your browser.</p>
+    </header>
+
+    <form class="history-form" method="post">
+      <label for="db_path">Chrome History file path</label>
+      <input id="db_path" name="db_path" type="text" value="{{ db_path }}" placeholder="e.g. ~/Library/Application Support/Google/Chrome/Default/History" />
+      <button type="submit">Analyze History</button>
+    </form>
+
+    {% if error %}
+      <div class="alert error">{{ error }}</div>
+    {% endif %}
+
+    {% if top_sites %}
+      <section class="card">
+        <h2>Top Visited Websites</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>URL</th>
+              <th>Title</th>
+              <th>Visits</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for site in top_sites %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td><a href="{{ site.url }}" target="_blank">{{ site.url }}</a></td>
+                <td>{{ site.title }}</td>
+                <td>{{ site.visits }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    {% endif %}
+
+    {% if risky_sites %}
+      <section class="card">
+        <h2>Risky Sites</h2>
+        <ul class="risk-list">
+          {% for site in risky_sites %}
+            <li><a href="{{ site }}" target="_blank">{{ site }}</a></li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% elif top_sites %}
+      <section class="card">
+        <h2>Risky Sites</h2>
+        <p class="no-risk">No risky sites detected.</p>
+      </section>
+    {% endif %}
+
+    <footer class="page-footer">
+      <p>Browser-based UI for easier usage.</p>
+    </footer>
+  </div>
+</body>
+</html>
